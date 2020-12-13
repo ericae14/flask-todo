@@ -9,12 +9,19 @@ from model import Task, User
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY").encode()
 
+@app.route('/')
+def default_route():
+    redirect(url_for('all'))
+
 @app.route('/all')
 def all_tasks():
     return render_template('all.jinja2', tasks=Task.select())
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
     if request.method == "POST":
         task = Task(name=request.form['name'])
         task.save()
@@ -25,9 +32,6 @@ def create():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
     if request.method == "POST":
         user = User.select().where(User.name == request.form['name']).get()
 
