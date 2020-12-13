@@ -11,7 +11,7 @@ app.secret_key = os.environ.get("SECRET_KEY").encode()
 
 @app.route('/')
 def default_route():
-    redirect(url_for('all'))
+    return redirect(url_for('all'))
 
 @app.route('/all')
 def all_tasks():
